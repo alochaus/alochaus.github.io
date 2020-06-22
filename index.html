@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>alochaus</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+		<link href="https://fonts.googleapis.com/css?family=Crimson+Text|Work+Sans:400,700" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<div id="navbar">
+			<div class="container text-center">
+				<p class="h1">Aloc's Blog<p>
+			</div>
+			<nav>
+				<ul class="mx-auto nav justify-content-between" style="width:250px;">
+					<li class="nav-item font-weight-bold">
+						<a class="nav-link" href="#">Home</a>
+					</li>
+					<li class="nav-item font-weight-bold">
+						<a class="nav-link disabled" href="About.html">About</a>
+					</li>
+					<li class="nav-item font-weight-bold">
+						<a class="nav-link disabled" href="Entries.html">Entries</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+
+
+
+		<div class="container">
+
+			<h1 class="text-center">Managing Your Passwords with <a href="https://gnupg.org/">GPG</a> and <a href="https://www.passwordstore.org/">Pass</a></h1>
+			<img src="images/2020/06-22/managing-your-passwords-with-gpg-and-pass.png" class="w-75 mx-auto d-block my-4"/>
+			<h3>Explaining PGP Cryptography</h3>
+			<h4>The Problem with Symmetric Keys</h5>
+			<p>
+			The concept of a symmetric key is pretty simple. Let's suppose that we have a box with a lock. The symmetric key will be able to open (decrypt) and close (encrypt) the box. Just like any other key, you can make a copy and give it to a friend. Can you see it already? If a third party intercepts the packets that you sent to a friend, this person might also able to open and close the box. So it's pretty obvious this is not the way to go.
+			</p>
+			<h4>The Soulution</h5>
+			<p>
+			PGP solves this problem through asymmetric keys. In this method there are two keys: the private key and the public key. As the name suggests the public key is the one that is going to be publicly available, so that anyone can encrypt whatever they want to send to you. The private key is responsible for decrypting, this one you should keep to yourself. Be aware that in RSA algorithm, if you have the private key, you are able to calculate the public key.
+			</p>
+
+			<h3>The Risk of Using a Decentralized Password Manager</h3>
+			<ul>
+				<li>If you lose your password store, there will be no such file to be decrypted.</li>
+				<li>If you lose your private key, you won't be able to decrypt your files.</li>
+			</ul>
+			<p class="h5 font-weight-bold">SO BACKUP YOUR KEYS AND YOUR PASSWORD STORE. You've been warned.</p>
+			<ul>
+				<li>
+					<a href="#backup-keys">How to backup your PGP keys.</a>
+				</li>
+				<li>
+					<a href="#pass-store-location">Where your password store is located.</a>
+				</li>
+			</ul>
+			<h3>Installation</h3>
+			<p>
+			We have to install two packages:
+			</p>
+			<ul>
+				<li>pass</li>
+				<li>pinentry-gtk</li>
+			</ul>
+			<h5>Fedora</h5>
+			<pre><code>dnf install pass pinentry-gtk</code></pre>
+			<br />
+
+			<h3>Hands-On GPG and Pass</h3>
+			<p>First of all let's generate a new pair of keys in order to be able to encrypt our passwords.</p>
+			<pre><code>
+## Generates a new key
+gpg --full-gen-key
+			</code></pre>
+			<img src="images/2020/06-22/full-gen-key-0.png" />
+			<br /><br />
+			<p>From now on, we will be referring to this pair of keys as the email we've provided.</p>
+			<p>When you hit "O", you will be prompted with the following window asking for a password:</p>
+			<img src="images/2020/06-22/full-gen-key-1.png" />
+			<br /><br />
+			<p id="backup-keys">This password will be used with the private key to decrypt the password. I guess we can call that a two-factor authentication.</p>
+			<p>Now that we've generated a pair of keys, it's time to backup those. <span class="font-weight-bold">THIS IS AN EXTREMELY IMPORTANT STEP!</span></p>
+			<pre><code>
+## Exports public key
+gpg --export --armor josh.nickles@gmail.com > publ.asc
+			</code></pre>
+
+			<pre><code>
+## Exports private key
+gpg --export-secret-keys --armor josh.nickles@gmail.com > priv.asc
+			</code></pre>
+			<p>I recommend you to try deleting your keys and importing them again. You'll have to do this sooner or later. This step is not needed but definetely worth it.</p>
+			<pre><code>
+## In case you want to delete your keys
+gpg --delete-secret-and-public-keys josh.nickles@gmail.com
+			</code></pre>
+			<pre><code>
+## This is how you will import your keys
+gpg --import publ.asc priv.asc
+			</code></pre>
+			<pre><code>
+## This command will allow us to set the trust level of the key
+gpg --edit-key josh.nickles@gmail.com
+			</code></pre>
+			<img src="images/2020/06-22/edit-key.png" />
+			<br /><br />
+			<p>Alright, our journey with GPG is over. By now you should know how to generate, import, export, delete and trust keys.</p>
+			<p>Now we are going to use Pass, which is going to be responsible for encrypting out passwords with the keys that we've just generated!</p>
+			<p>First we need to initialize Pass and pass our key-id as a parameter.</p>
+			<p class="font-italic">Reminder: we're using the email as an alias to the key-id.</p>
+			<pre><code>
+## Init
+pass init josh.nickles@gmail.com
+			</code></pre>
+			<img src="images/2020/06-22/pass-init.png">
+			<pre><code>
+## Inserts your password
+pass insert myanimelist.net/myusername
+			</code></pre>
+			<img src="images/2020/06-22/pass-insert.png" />
+			<br />
+			<pre><code>
+## Removes a password
+pass rm myanimelist.net/myusername
+			</code></pre>
+			<img src="images/2020/06-22/pass-rm.png">
+			<pre><code>
+## Returns a list of inserted websites
+pass ls
+			</code></pre>
+			<img src="images/2020/06-22/pass-ls.png" />
+			<pre><code>
+## Generates password (where n is the length of the passwd)
+pass generate myanimelist.net/myusername 15
+			</code></pre>
+			<img src="images/2020/06-22/pass-generate.png" />
+			<pre><code>
+## Retrieves password
+pass myanimelist.net/myusername
+			</code></pre>
+			<img src="images/2020/06-22/pass-website.png" />
+			<pre><code>
+## Copies password to clipboard
+pass -c myanimelist.net/myusername
+			</code></pre>
+			<img src="images/2020/06-22/pass-c.png" />
+			<br /><br />
+			<p>I've covered only the basics to get you started, for more information check:</p>
+			<ul>
+				<li><a href="https://git.zx2c4.com/password-store/about/">Pass' manual</a></li>
+				<li><a href="https://gnupg.org/documentation/manuals/gnupg/">GPG's manual</a></li>
+			</ul>
+
+			<p id="pass-store-location" class="font-weight-bold">YOUR PASSWORDS LIVE IN <code>~/.password-store</code>. SO MAKE SURE TO BACKUP IT EVERYTIME YOU MODIFY THIS FOLDER.</p>
+			<p></p>
+
+			<h3>passff - Pass Plugin for Firefox</h3>
+			<p><a href="https://www.passwordstore.org/">Pass</a> has a variety of <a href="https://www.passwordstore.org/#extensions">extensions</a> and <a href="https://www.passwordstore.org/#other">compatible clients</a> that make it usable pretty much any browser and operating system.</p>
+			<p>We will need to install the following programs:</p>
+			<ul>
+				<li><a href="https://github.com/passff/passff-host">passff-host</a></li>
+				<li><a href="https://addons.mozilla.org/en-US/firefox/addon/passff/">passff</a></li>
+			</ul>
+			<p>The following line should be enough to install <a href="https://github.com/passff/passff-host">passff-host</a>. If you run into problems, I recommend you to check their github page, which has been linked above.</p>
+			<pre><code>curl -sSL github.com/passff/passff-host/releases/latest/download/install_host_app.sh | bash -s -- firefox</code></pre>
+			<br />
+			<p>The next step is pretty simple. Open the <a href="https://addons.mozilla.org/en-US/firefox/addon/passff/">passff</a> link and then click on <span class="font-italic">Add to firefox</span>.</p>
+			<img class="mb-2" src="images/2020/06-22/passff-0.png" style="width:800px" />
+			<img class="mb-2" src="images/2020/06-22/passff-1.gif" />
+		</div>
+
+
+
+	</body>
+</html>
