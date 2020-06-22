@@ -82,7 +82,7 @@ gpg --full-gen-key
 			<p>When you hit "O", you will be prompted with the following window asking for a password:</p>
 			<img src="images/2020/06-22/full-gen-key-1.png" />
 			<br /><br />
-			<p id="backup-keys">This password will be used with the private key to decrypt the password. I guess we can call that a two-factor authentication.</p>
+			<p id="backup-keys">This password will be used along with the private key to decrypt the password. I guess we can call that a two-factor authentication.</p>
 			<p>Now that we've generated a pair of keys, it's time to backup those. <span class="font-weight-bold">THIS IS AN EXTREMELY IMPORTANT STEP!</span></p>
 			<pre><code>
 ## Exports public key
@@ -109,7 +109,7 @@ gpg --edit-key josh.nickles@gmail.com
 			<img src="images/2020/06-22/edit-key.png" />
 			<br /><br />
 			<p>Alright, our journey with GPG is over. By now you should know how to generate, import, export, delete and trust keys.</p>
-			<p>Now we are going to use Pass, which is going to be responsible for encrypting out passwords with the keys that we've just generated!</p>
+			<p>Now we are going to use Pass, which is going to be responsible for encrypting our passwords with the keys that we've just generated!</p>
 			<p>First we need to initialize Pass and pass our key-id as a parameter.</p>
 			<p class="font-italic">Reminder: we're using the email as an alias to the key-id.</p>
 			<pre><code>
@@ -159,7 +159,7 @@ pass -c myanimelist.net/myusername
 			<p></p>
 
 			<h3>passff - Pass Plugin for Firefox</h3>
-			<p><a href="https://www.passwordstore.org/">Pass</a> has a variety of <a href="https://www.passwordstore.org/#extensions">extensions</a> and <a href="https://www.passwordstore.org/#other">compatible clients</a> that make it usable pretty much any browser and operating system.</p>
+			<p><a href="https://www.passwordstore.org/">Pass</a> has a variety of <a href="https://www.passwordstore.org/#extensions">extensions</a> and <a href="https://www.passwordstore.org/#other">compatible clients</a> that make it usable pretty much on any browser and operating system.</p>
 			<p>We will need to install the following programs:</p>
 			<ul>
 				<li><a href="https://github.com/passff/passff-host">passff-host</a></li>
@@ -172,8 +172,5 @@ pass -c myanimelist.net/myusername
 			<img class="mb-2" src="images/2020/06-22/passff-0.png" style="width:800px" />
 			<img class="mb-2" src="images/2020/06-22/passff-1.gif" />
 		</div>
-
-
-
 	</body>
 </html>
